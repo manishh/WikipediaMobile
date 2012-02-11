@@ -101,6 +101,8 @@ window.geo = function() {
 			geo.map.removeLayer(geo.markers);
 		}
 		geo.markers = new L.LayerGroup();
+		var zoomLevel = geo.map.getZoom();
+		//console.log("Zoom level =" + zoomLevel);
 		$.each(data.geonames, function(i, item) {
 			var url = item.wikipediaUrl.replace(/^([a-z0-9-]+)\.wikipedia\.org/, 'https://$1.m.wikipedia.org');
 			var marker = new L.Marker(new L.LatLng(item.lat, item.lng));
@@ -109,6 +111,19 @@ window.geo = function() {
 			                 '<strong>' + item.title + '</strong>' +
 			                 '<p>' + item.summary + '</p>' +
 			                 '</div>');
+		   		   
+		   // @manishh - return results as per zoom level, bug # 31891
+		   // https://bugzilla.wikimedia.org/show_bug.cgi?id=31891
+		   //console.log(i + " - " + item.lng);  
+		   if(0 == i && zoomLevel <= 4){
+		   		return false;
+		   }else if(1 == i && zoomLevel > 4 && zoomLevel <= 8){ 
+				return false;		   	
+		   }else if(2 == i && zoomLevel > 8 && zoomLevel <= 12){ 
+				return false;		   	
+		   }else if(3 == i && zoomLevel > 12 && zoomLevel <= 14){ 
+				return false;		   	
+		   } 			                 
 		});
 		geo.map.addLayer(geo.markers);
 	}
